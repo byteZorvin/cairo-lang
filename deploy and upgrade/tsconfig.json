@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "strict": true,
+        "skipLibCheck": true,
+        "noEmit": true
+    },
+    "files": [
+        "common.ts",
+        "set-verifier.ts",
+        "simulate-deploy.ts",
+        "simulate-upgrade.ts",
+        "upgrade.ts",
+        "solc.d.ts"
+    ]
+}

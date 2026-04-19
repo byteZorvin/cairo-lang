@@ -52,6 +52,13 @@ contract Starknet is
         uint256 newAggregatorProgramHash
     );
 
+    // Indicates a change of the SHARP verifier contract address.
+    event VerifierAddressChanged(
+        address indexed changedBy,
+        address oldVerifierAddress,
+        address newVerifierAddress
+    );
+
     // Random storage slot tags.
     string internal constant PROGRAM_HASH_TAG = "STARKNET_1.0_INIT_PROGRAM_HASH_UINT";
     string internal constant AGGREGATOR_PROGRAM_HASH_TAG =
@@ -94,6 +101,13 @@ contract Starknet is
     function setConfigHash(uint256 newConfigHash) external notFinalized onlyGovernance {
         emit ConfigHashChanged(msg.sender, configHash(), newConfigHash);
         configHash(newConfigHash);
+    }
+
+    function setVerifierAddress(address newVerifierAddress) external notFinalized onlyGovernance {
+        require(newVerifierAddress != address(0x0), "BAD_VERIFIER_ADDRESS");
+        require(newVerifierAddress.code.length > 0, "VERIFIER_NOT_CONTRACT");
+        emit VerifierAddressChanged(msg.sender, verifier(), newVerifierAddress);
+        verifier(newVerifierAddress);
     }
 
     function setMessageCancellationDelay(uint256 delayInSeconds)
@@ -156,6 +170,10 @@ contract Starknet is
         return NamedStorage.getAddressValue(VERIFIER_ADDRESS_TAG);
     }
 
+    function verifierAddress() external view returns (address) {
+        return verifier();
+    }
+
     // State variable "configHash" write-access function.
     function configHash(uint256 value) internal {
         NamedStorage.setUintValue(CONFIG_HASH_TAG, value);
@@ -166,7 +184,11 @@ contract Starknet is
         return NamedStorage.getUintValue(CONFIG_HASH_TAG);
     }
 
-    function setVerifierAddress(address value) internal {
+    function verifier(address value) internal {
+        NamedStorage.setAddressValue(VERIFIER_ADDRESS_TAG, value);
+    }
+
+    function initVerifierAddress(address value) internal {
         NamedStorage.setAddressValueOnce(VERIFIER_ADDRESS_TAG, value);
     }
 
@@ -205,7 +227,7 @@ contract Starknet is
 
         programHash(programHash_);
         aggregatorProgramHash(aggregatorProgramHash_);
-        setVerifierAddress(verifier_);
+        initVerifierAddress(verifier_);
         state().copy(initialState);
         configHash(configHash_);
         messageCancellationDelay(5 days);

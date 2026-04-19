@@ -3,10 +3,22 @@
     "version": "1.0.0",
     "private": true,
     "description": "",
+    "scripts": {
+        "starknet:upgrade:production": "tsx \"deploy and upgrade/upgrade.ts\"",
+        "starknet:set-verifier:production": "tsx \"deploy and upgrade/set-verifier.ts\"",
+        "starknet:simulate:deploy": "tsx \"deploy and upgrade/simulate-deploy.ts\"",
+        "starknet:simulate:upgrade": "tsx \"deploy and upgrade/simulate-upgrade.ts\""
+    },
     "dependencies": {
+        "ethers": "^6.16.0",
         "ganache": "7.9.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "@types/node": "^25.0.0",
+        "solc": "0.8.24",
+        "tsx": "^4.21.0",
+        "typescript": "^6.0.3"
+    },
     "author": "",
     "license": "ISC"
 }
